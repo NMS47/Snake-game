@@ -6,45 +6,50 @@ from Scoreboard import ScoreBoard
 
 screen = Screen()
 screen.bgcolor("black")
-screen.setup(800, 800)
+screen.setup(600, 600)
 screen.title("Snake Game")
 screen.tracer(0)
-score = ScoreBoard()
+
 
 largo = 3
-create = Snake(largo)
-snake = create.snake
-food = Food()
-screen.listen()
-screen.onkey(create.up, "Up")
-screen.onkey(create.down, "Down")
-screen.onkey(create.left, "Left")
-screen.onkey(create.right, "Right")
 
+
+keep_playing = True
 game_on = True
-while game_on:
-    screen.update()
-    time.sleep(0.1)
-    if create.hit_wall():
-        game_on = False
-    create.snake_move()
-    if create.head.distance(food) < 18:
-        food.refresh()
-        score.new_score()
-        create.add_new_block()
+food = Food()
 
-        print("nom nom")
-
-    for block in create.snake[1:]:
-        # print(create.head.position())
-        # print(block.position())
-        # print("-------")
-        if create.head.position() == block.position():
-            create.color("white")
-            create.penup()
-            create.hideturtle()
-            create.write("Game over", align="center", font=("Arial", 20, "normal"))
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+while keep_playing:
+    create = Snake(largo)
+    score = ScoreBoard()
+    snake = create.snake
+    screen.listen()
+    screen.onkey(create.up, "Up")
+    screen.onkey(create.down, "Down")
+    screen.onkey(create.left, "Left")
+    screen.onkey(create.right, "Right")
+    while game_on:
+        screen.update()
+        time.sleep(0.1)
+        if create.hit_wall():
+            score.new_high_score()
             game_on = False
+        create.snake_move()
+        if create.head.distance(food) < 18:
+            food.refresh()
+            score.new_score()
+            create.add_new_block()
 
+        for block in create.snake:
+            if not create.head == block:
+                if create.head.distance(block) < 10:
+                    game_on = False
+
+    if screen.textinput("Game Over",  "Keep playing? y or n: ") == "y":
+        create.remake()
+        score.clear()
+        screen.update()
+        game_on = True
+    else:
+        keep_playing = False
+        screen.bgcolor("white")
 screen.exitonclick()
