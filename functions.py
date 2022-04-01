@@ -4,7 +4,8 @@ UP = 90
 DOWN = 270
 LEFT = 180
 RIGHT = 0
-LIMIT = 370
+LIMIT = 290.0
+LIMIT_NEG = LIMIT * -1
 
 
 class Snake(Turtle):
@@ -38,6 +39,12 @@ class Snake(Turtle):
         self.snake.append(block)
         self.largo += 1
 
+    def game_over(self):
+        self.color("white")
+        self.penup()
+        self.hideturtle()
+        self.write("Game over", align="center", font=("Arial", 20, "normal"))
+
     def hit_wall(self):
         conditions = [
             self.head.xcor() >= LIMIT,
@@ -46,11 +53,13 @@ class Snake(Turtle):
             self.head.ycor() <= -LIMIT,
         ]
         if any(conditions):
-            self.color("white")
-            self.penup()
-            self.hideturtle()
-            self.write("Game over",  align="center", font=("Arial", 20, "normal"))
             return True
+
+    def remake(self):
+        for block in self.snake:
+            block.goto(1000, 1000)
+            block.color("black")
+        self.snake.clear()
 
     def snake_move(self):
         """The snake starts moving forwards"""
