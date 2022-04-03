@@ -28,7 +28,4 @@ class ScoreBoard(Turtle):
             self.high_score = self.score
             with open('high_score.txt', mode='w') as text:
                 text.write(str(self.score))
-                print("escribido")
-
-
-
+                
